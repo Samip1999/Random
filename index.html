@@ -1,728 +1,1041 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samip Upreti - Developer & Educator</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAMIP UPRETI // PORTFOLIO</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff41;
+    --green-dim: #00cc33;
+    --green-dark: #003b00;
+    --green-glow: #00ff4180;
+    --amber: #ffb000;
+    --bg: #0a0a0a;
+    --bg2: #0d0d0d;
+    --grid: #0f1f0f;
+    --border: #00ff4140;
+    --border-bright: #00ff4190;
+    --scanline: rgba(0,0,0,0.15);
+  }
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #ffffff;
-            overflow-x: hidden;
-        }
+  html { scroll-behavior: smooth; }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+  body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
 
-        /* Navigation */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      var(--scanline) 2px,
+      var(--scanline) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    animation: scanMove 8s linear infinite;
+  }
 
-        .nav-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  /* CRT flicker */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #fbbf24;
-        }
+  @keyframes scanMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
+  /* Grid background */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-        .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: #fbbf24;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #fbbf24;
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after,
-        .nav-links a.active::after {
-            width: 100%;
-        }
-
-        /* Page Sections */
-        .page {
-            min-height: 100vh;
-            padding: 100px 0 50px;
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* About Page */
-        .about-content {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 4rem;
-            align-items: start;
-        }
-
-        .profile-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .profile-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    margin: 0 auto 1rem;
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(10,10,10,0.95);
+    border-bottom: 1px solid var(--border-bright);
+    padding: 0 2rem;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    backdrop-filter: blur(4px);
+  }
+
+  .nav-logo {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green-glow);
+    letter-spacing: 2px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--green-dim);
+    text-decoration: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .nav-links a::before { content: '> '; color: var(--amber); }
+  .nav-links a:hover { color: var(--green); text-shadow: 0 0 8px var(--green-glow); }
+
+  .status-bar {
+    font-size: 11px;
+    color: var(--green-dim);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    font-size: 3rem;
-    font-weight: bold;
-    color: #1a1a1a;
-    }
+    align-items: flex-start;
+    padding: 80px 6vw 4rem;
+    position: relative;
+    z-index: 1;
+  }
 
-.profile-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .hero-pre {
+    font-size: 12px;
+    color: var(--amber);
+    letter-spacing: 4px;
+    margin-bottom: 1rem;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .hero-title {
+    font-family: 'VT323', monospace;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.9;
+    color: var(--green);
+    text-shadow:
+      0 0 20px var(--green-glow),
+      0 0 60px rgba(0,255,65,0.2),
+      2px 2px 0 #003300;
+    margin-bottom: 0.5rem;
+    animation: glitch 8s infinite;
+    letter-spacing: 2px;
+  }
+
+  @keyframes glitch {
+    0%, 92%, 100% { text-shadow: 0 0 20px var(--green-glow), 0 0 60px rgba(0,255,65,0.2), 2px 2px 0 #003300; transform: translate(0); }
+    93% { text-shadow: -2px 0 #ff0044, 2px 2px 0 #003300; transform: translate(-2px, 0); }
+    94% { text-shadow: 2px 0 #00ffff, 2px 2px 0 #003300; transform: translate(2px, 0); }
+    95% { text-shadow: 0 0 20px var(--green-glow); transform: translate(0); }
+    96% { text-shadow: -2px 0 #ff0044; transform: translate(-1px, 1px); }
+    97% { text-shadow: 0 0 20px var(--green-glow); transform: translate(0); }
+  }
+
+  .hero-subtitle {
+    font-family: 'VT323', monospace;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--amber);
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease;
+  }
+
+  .hero-desc {
+    max-width: 600px;
+    color: var(--green-dim);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    border-left: 2px solid var(--border-bright);
+    padding-left: 1rem;
+    animation: fadeIn 1s ease;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeIn 1.2s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    padding: 0.7rem 1.5rem;
+    border: 1px solid var(--green);
+    background: transparent;
+    color: var(--green);
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+    display: inline-block;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--green);
+    opacity: 0;
+    transition: opacity 0.2s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  .btn:hover::before { opacity: 0.15; }
+  .btn:hover { box-shadow: 0 0 15px var(--green-glow); text-shadow: 0 0 8px var(--green-glow); }
+
+  .btn.amber {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .btn.amber:hover { box-shadow: 0 0 15px rgba(255,176,0,0.4); }
+  .btn.amber::before { background: var(--amber); }
+
+  /* TERMINAL WINDOW */
+  .terminal {
+    background: rgba(0,15,0,0.8);
+    border: 1px solid var(--border-bright);
+    margin: 0 6vw 4rem;
+    position: relative;
+    z-index: 1;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+
+  .terminal-bar {
+    background: var(--green-dark);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-dots { display: flex; gap: 6px; }
+  .terminal-dot {
+    width: 10px; height: 10px;
     border-radius: 50%;
-    }
+    border: 1px solid;
+  }
+  .dot-r { background: #ff5f57; border-color: #e0443e; }
+  .dot-y { background: #febc2e; border-color: #d4a017; }
+  .dot-g { background: #28c840; border-color: #1aab29; }
 
+  .terminal-title {
+    font-family: 'Share Tech Mono';
+    font-size: 12px;
+    color: var(--green-dim);
+    flex: 1;
+    text-align: center;
+  }
 
-        .profile-info h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #fbbf24;
-        }
+  .terminal-body {
+    padding: 1.5rem;
+    font-size: 13px;
+    line-height: 2;
+    color: var(--green-dim);
+  }
 
-        .profile-info p {
-            color: #a0a0a0;
-            margin-bottom: 1rem;
-        }
+  .terminal-body .cmd { color: var(--amber); }
+  .terminal-body .output { color: var(--green); }
+  .terminal-body .comment { color: #005500; }
 
-        .contact-info {
-            text-align: left;
-            margin-top: 2rem;
-        }
+  /* SECTIONS */
+  section {
+    padding: 5rem 6vw;
+    position: relative;
+    z-index: 1;
+  }
 
-        .contact-info div {
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
 
-        .contact-info span {
-            color: #fbbf24;
-            font-weight: 500;
-        }
+  .section-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--amber);
+    opacity: 0.7;
+  }
 
-        .main-content {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 3rem;
-            backdrop-filter: blur(10px);
-        }
+  .section-title {
+    font-family: 'VT323', monospace;
+    font-size: 3rem;
+    color: var(--green);
+    text-shadow: 0 0 15px var(--green-glow);
+    letter-spacing: 3px;
+  }
 
-        .main-content h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--border-bright), transparent);
+  }
 
-        .main-content p {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: #d0d0d0;
-            margin-bottom: 2rem;
-        }
+  /* ABOUT */
+  #about .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
 
-        .skills-section {
-            margin-top: 3rem;
-        }
+  .about-text p {
+    color: var(--green-dim);
+    margin-bottom: 1rem;
+    line-height: 1.9;
+    font-size: 14px;
+  }
 
-        .skills-section h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: #fbbf24;
-        }
+  .about-text p::first-letter {
+    font-family: 'VT323';
+    font-size: 2rem;
+    color: var(--green);
+    float: left;
+    margin-right: 4px;
+    line-height: 1;
+  }
 
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
+  .skills-box {
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
 
-        .skill-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 1.5rem;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
+  .skills-title {
+    font-family: 'VT323';
+    font-size: 1.5rem;
+    color: var(--amber);
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+  }
 
-        .skill-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(251, 191, 36, 0.3);
-        }
+  .skill-tag {
+    display: inline-block;
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    margin: 4px;
+    font-size: 12px;
+    color: var(--green-dim);
+    transition: all 0.2s;
+  }
 
-        .skill-card h4 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: #fbbf24;
-        }
+  .skill-tag:hover {
+    border-color: var(--green);
+    color: var(--green);
+    text-shadow: 0 0 6px var(--green-glow);
+    box-shadow: 0 0 8px var(--green-glow) inset;
+  }
 
-        /* Experience Page */
-        .experience-timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
+  /* SERVICES */
+  #services .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
 
-        .experience-timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, #fbbf24, #f59e0b);
-        }
+  .service-card {
+    border: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    overflow: hidden;
+  }
 
-        .experience-item {
-            position: relative;
-            margin-bottom: 3rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-left: 2rem;
-        }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--green);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
 
-        .experience-item::before {
-            content: '';
-            position: absolute;
-            left: -3rem;
-            top: 2rem;
-            width: 12px;
-            height: 12px;
-            background: #fbbf24;
-            border-radius: 50%;
-            border: 3px solid #1a1a1a;
-        }
+  .service-card:hover {
+    border-color: var(--green);
+    box-shadow: 0 0 20px rgba(0,255,65,0.1);
+    background: rgba(0,255,65,0.03);
+  }
 
-        .experience-item h3 {
-            font-size: 1.4rem;
-            color: #fbbf24;
-            margin-bottom: 0.5rem;
-        }
+  .service-card:hover::before { transform: scaleX(1); }
 
-        .experience-item .company {
-            font-size: 1.1rem;
-            color: #ffffff;
-            margin-bottom: 0.5rem;
-        }
+  .service-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
 
-        .experience-item .duration {
-            color: #a0a0a0;
-            margin-bottom: 1rem;
-        }
+  .service-name {
+    font-family: 'VT323';
+    font-size: 1.5rem;
+    color: var(--green);
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+  }
 
-        .experience-item .location {
-            color: #a0a0a0;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
+  .service-desc {
+    font-size: 13px;
+    color: var(--green-dim);
+    line-height: 1.7;
+  }
 
-        .experience-item p {
-            line-height: 1.6;
-            color: #d0d0d0;
-        }
+  .card-corner {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 6px; height: 6px;
+    border-top: 1px solid var(--amber);
+    border-right: 1px solid var(--amber);
+  }
 
-        /* Contact Page */
-        .contact-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-        }
+  /* EXPERIENCE */
+  #experience .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
 
-        .contact-form {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 3rem;
-        }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--green), transparent);
+  }
 
-        .contact-form h2 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: #fbbf24;
-        }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-left: 2rem;
+  }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+  .timeline-item::before {
+    content: '◆';
+    position: absolute;
+    left: -1.15rem;
+    top: 4px;
+    color: var(--amber);
+    font-size: 12px;
+  }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-            font-weight: 500;
-        }
+  .timeline-date {
+    font-size: 12px;
+    color: var(--amber);
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    font-family: 'Share Tech Mono';
+  }
 
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: #ffffff;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
+  .timeline-role {
+    font-family: 'VT323';
+    font-size: 1.8rem;
+    color: var(--green);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    letter-spacing: 2px;
+  }
 
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #fbbf24;
-        }
+  .timeline-org {
+    font-size: 13px;
+    color: var(--green-dim);
+    margin-bottom: 0.3rem;
+  }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
+  .timeline-loc {
+    font-size: 12px;
+    color: #005500;
+    margin-bottom: 0.8rem;
+  }
 
-        .submit-btn {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #1a1a1a;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
+  .timeline-desc {
+    font-size: 13px;
+    color: var(--green-dim);
+    line-height: 1.8;
+    max-width: 600px;
+    border-left: 1px solid var(--border);
+    padding-left: 1rem;
+  }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-        }
+  .edu-box {
+    margin-top: 3rem;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    position: relative;
+  }
 
-        .contact-info-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 3rem;
-        }
+  .edu-box::after {
+    content: 'EDU';
+    position: absolute;
+    top: -1px; right: 2rem;
+    background: var(--bg);
+    padding: 0 0.5rem;
+    font-size: 10px;
+    color: var(--amber);
+    letter-spacing: 2px;
+  }
 
-        .contact-info-section h2 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: #fbbf24;
-        }
+  /* CONTACT */
+  #contact .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
 
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-        }
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #1a1a1a;
-        }
+  .form-group { position: relative; }
 
-        .contact-item-content h4 {
-            color: #ffffff;
-            margin-bottom: 0.25rem;
-        }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+  }
 
-        .contact-item-content p {
-            color: #a0a0a0;
-        }
+  .form-input, .form-textarea {
+    width: 100%;
+    background: rgba(0,15,0,0.6);
+    border: 1px solid var(--border);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    padding: 0.7rem 1rem;
+    outline: none;
+    transition: all 0.2s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-links {
-                gap: 1rem;
-            }
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 10px var(--green-glow);
+  }
 
-            .about-content,
-            .contact-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
+  .form-textarea { height: 120px; resize: none; }
 
-            .main-content {
-                padding: 2rem;
-            }
+  .form-input::placeholder, .form-textarea::placeholder {
+    color: #003b00;
+  }
 
-            .main-content h1 {
-                font-size: 2rem;
-            }
+  .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
 
-            .skills-grid {
-                grid-template-columns: 1fr;
-            }
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
 
-            .experience-timeline {
-                padding-left: 1rem;
-            }
+  .info-item:hover {
+    border-color: var(--green);
+    background: rgba(0,255,65,0.03);
+  }
 
-            .experience-item {
-                margin-left: 1rem;
-            }
+  .info-icon { font-size: 1.2rem; min-width: 2rem; }
 
-            .experience-item::before {
-                left: -2rem;
-            }
-        }
+  .info-label {
+    font-size: 11px;
+    color: var(--amber);
+    letter-spacing: 2px;
+    margin-bottom: 3px;
+  }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  .info-val {
+    font-size: 13px;
+    color: var(--green-dim);
+    word-break: break-all;
+  }
 
-        .fade-in {
-            animation: fadeInUp 0.6s ease forwards;
-        }
+  .info-val a {
+    color: var(--green-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
 
-        .page.active .fade-in {
-            animation-delay: 0.1s;
-        }
-    </style>
+  .info-val a:hover { color: var(--green); text-shadow: 0 0 6px var(--green-glow); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: #005500;
+    letter-spacing: 1px;
+  }
+
+  .footer-links { display: flex; gap: 1.5rem; }
+
+  .footer-links a {
+    font-size: 12px;
+    color: var(--green-dim);
+    text-decoration: none;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .footer-links a:hover { color: var(--green); text-shadow: 0 0 6px var(--green-glow); }
+
+  /* PIXEL CURSOR */
+  .px-cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    border: 2px solid var(--green);
+    pointer-events: none;
+    z-index: 10000;
+    transition: transform 0.1s;
+    transform: translate(-50%, -50%);
+  }
+
+  /* NOISE */
+  .noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    animation: noiseAnim 0.5s steps(2) infinite;
+  }
+
+  @keyframes noiseAnim {
+    0% { transform: translate(0,0); }
+    25% { transform: translate(-2%,-1%); }
+    50% { transform: translate(1%,2%); }
+    75% { transform: translate(-1%,1%); }
+    100% { transform: translate(2%,-2%); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--green-dark); border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--green-dim); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 0 1rem; }
+    .nav-links { gap: 1rem; }
+    .status-bar { display: none; }
+    #about .about-grid,
+    #contact .contact-grid { grid-template-columns: 1fr; }
+    section { padding: 3rem 1.5rem; }
+    .hero-title { font-size: clamp(3rem, 16vw, 6rem); }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+
+  @media (max-width: 480px) {
+    .nav-links { display: none; }
+  }
+
+  /* Typed cursor */
+  .typed-cursor { animation: blink 0.8s step-end infinite; }
+
+  /* Section divider */
+  .divider {
+    text-align: center;
+    color: var(--border);
+    letter-spacing: 4px;
+    font-size: 12px;
+    margin: 1rem 0;
+    user-select: none;
+    position: relative;
+    z-index: 1;
+  }
+</style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="container">
-            <div class="nav-content">
-                <div class="logo">Samip Upreti</div>
-                <ul class="nav-links">
-                    <li><a href="#about" class="nav-link active">About</a></li>
-                    <li><a href="#experience" class="nav-link">Experience</a></li>
-                    <li><a href="#contact" class="nav-link">Contact</a></li>
-                </ul>
-            </div>
+
+<div class="grid-bg"></div>
+<div class="noise"></div>
+<div class="px-cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SAMIP.EXE</div>
+  <ul class="nav-links">
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#services">SERVICES</a></li>
+    <li><a href="#experience">EXPERIENCE</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
+  <div class="status-bar">
+    <span id="clock">00:00:00</span>
+    <span>|</span>
+    <span>LALITPUR, NP</span>
+    <span>|</span>
+    <span class="blink">●</span> ONLINE
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-pre">> INITIALIZING PORTFOLIO v2.0 ...</div>
+  <h1 class="hero-title">SAMIP<br>UPRETI</h1>
+  <div class="hero-subtitle">DEVELOPER // EDUCATOR // MAKER</div>
+  <p class="hero-desc">
+    BSc.CSIT | Based in Nepal | Bridging technology and education through hands-on learning, creative curriculum design, and modern software development.
+  </p>
+  <div class="hero-btns">
+    <a href="#experience" class="btn">LOAD EXPERIENCE</a>
+    <a href="#contact" class="btn amber">PING ME</a>
+  </div>
+</section>
+
+<!-- TERMINAL -->
+<div class="terminal">
+  <div class="terminal-bar">
+    <div class="terminal-dots">
+      <div class="terminal-dot dot-r"></div>
+      <div class="terminal-dot dot-y"></div>
+      <div class="terminal-dot dot-g"></div>
+    </div>
+    <div class="terminal-title">samip@portfolio:~$</div>
+  </div>
+  <div class="terminal-body">
+    <div><span class="cmd">$ whoami</span></div>
+    <div class="output">samip_upreti — developer, educator, ICT specialist</div>
+    <div><span class="cmd">$ cat skills.txt</span></div>
+    <div class="output">Web Dev, Mobile Apps, Education Technology, Technical Training,</div>
+    <div class="output">BSc.CSIT, Curriculum Design, Makerspace, Digital Literacy</div>
+    <div><span class="cmd">$ location</span></div>
+    <div class="output">Lalitpur, Nepal 📍</div>
+    <div><span class="cmd">$ status</span></div>
+    <div class="output">Currently teaching @ Rato Bangala School <span class="blink">█</span></div>
+  </div>
+</div>
+
+<div class="divider">─── ◆ ────────────────────────────────────────────────────────────────── ◆ ───</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <span class="section-num">[01]</span>
+    <h2 class="section-title">ABOUT_ME</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm a developer and educator based in Nepal. With a BSc.CSIT degree and hands-on teaching experience, I bring technical depth and educational insight to the world of ICT and software development.</p>
+      <p>My passion lies in bridging the gap between complex technology concepts and accessible learning experiences. Through my work in education, I've discovered the power of making technology approachable for learners of all ages.</p>
+    </div>
+    <div class="skills-box">
+      <div class="skills-title">> SKILL_SET.DAT</div>
+      <div>
+        <span class="skill-tag">JavaScript</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">Node.js</span>
+        <span class="skill-tag">Flutter</span>
+        <span class="skill-tag">HTML/CSS</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">Curriculum Design</span>
+        <span class="skill-tag">Makerspace</span>
+        <span class="skill-tag">Digital Literacy</span>
+        <span class="skill-tag">Arduino</span>
+        <span class="skill-tag">Linux</span>
+        <span class="skill-tag">EdTech</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">─── ◆ ────────────────────────────────────────────────────────────────── ◆ ───</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header">
+    <span class="section-num">[02]</span>
+    <h2 class="section-title">WHAT_I_DO</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="card-corner"></div>
+      <span class="service-icon">🌐</span>
+      <div class="service-name">WEB_DEV</div>
+      <p class="service-desc">Modern web applications with focus on user experience and performance optimization.</p>
+    </div>
+    <div class="service-card">
+      <div class="card-corner"></div>
+      <span class="service-icon">📱</span>
+      <div class="service-name">MOBILE_APPS</div>
+      <p class="service-desc">Cross-platform mobile applications for iOS and Android using modern frameworks.</p>
+    </div>
+    <div class="service-card">
+      <div class="card-corner"></div>
+      <span class="service-icon">🎓</span>
+      <div class="service-name">EDU_TECH</div>
+      <p class="service-desc">Creating engaging educational content and digital learning experiences.</p>
+    </div>
+    <div class="service-card">
+      <div class="card-corner"></div>
+      <span class="service-icon">🔧</span>
+      <div class="service-name">TECH_TRAINING</div>
+      <p class="service-desc">Conducting workshops and training sessions on various technology topics.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider">─── ◆ ────────────────────────────────────────────────────────────────── ◆ ───</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header">
+    <span class="section-num">[03]</span>
+    <h2 class="section-title">EXPERIENCE</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">OCT 2024 – PRESENT</div>
+      <div class="timeline-role">ICT & MAKERSPACE EDUCATOR</div>
+      <div class="timeline-org">Rato Bangala School</div>
+      <div class="timeline-loc">📍 Lalitpur, Nepal</div>
+      <p class="timeline-desc">Teaching computer science and Makerspace activities to young learners. Developing innovative curricula that combine theoretical computer science concepts with hands-on maker activities, fostering creativity and technical skills in students.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">NOV 2023 – OCT 2024</div>
+      <div class="timeline-role">ICT EDUCATOR</div>
+      <div class="timeline-org">Gems School</div>
+      <div class="timeline-loc">📍 Lalitpur, Nepal</div>
+      <p class="timeline-desc">Delivered engaging digital literacy lessons and improved the ICT curriculum. Successfully integrated modern teaching methodologies with technology education, resulting in improved student engagement and learning outcomes.</p>
+    </div>
+  </div>
+
+  <div class="edu-box">
+    <div class="timeline-date">2018 – 2022</div>
+    <div class="timeline-role">BSc.CSIT DEGREE</div>
+    <div class="timeline-loc">📍 Nepal</div>
+    <p class="timeline-desc" style="margin-top:0.5rem">Completed Bachelor of Science in Computer Science and Information Technology with focus on software development, database systems, and computer networks. Participated in various programming competitions and tech workshops.</p>
+  </div>
+</section>
+
+<div class="divider">─── ◆ ────────────────────────────────────────────────────────────────── ◆ ───</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <span class="section-num">[04]</span>
+    <h2 class="section-title">CONTACT</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-grid">
+    <form class="contact-form" action="https://formspree.io/f/mojpellw" method="POST" onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">FULL_NAME</label>
+        <input type="text" name="name" class="form-input" placeholder="Enter your name..." required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">EMAIL_ADDRESS</label>
+        <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">SUBJECT</label>
+        <input type="text" name="subject" class="form-input" placeholder="Message subject..." required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">YOUR_MESSAGE</label>
+        <textarea name="message" class="form-textarea" placeholder="Type your message here..." required></textarea>
+      </div>
+      <button type="submit" class="btn" id="sendBtn">SEND_MESSAGE</button>
+      <div id="formFeedback" style="font-size:13px;color:var(--amber);display:none;margin-top:0.5rem"></div>
+    </form>
+
+    <div class="contact-info">
+      <div class="info-item">
+        <div class="info-icon">📧</div>
+        <div>
+          <div class="info-label">EMAIL</div>
+          <div class="info-val"><a href="/cdn-cgi/l/email-protection#9aefeae8ffeee9fbf7f3eadafdf7fbf3f6b4f9f5f7"><span class="__cf_email__" data-cfemail="3f4a4f4d5a4b4c5e52564f7f58525e5653115c5052">[email&#160;protected]</span></a></div>
         </div>
-    </nav>
-
-    <!-- About Page -->
-    <section id="about" class="page active">
-        <div class="container">
-            <div class="about-content fade-in">
-                <div class="profile-card">
-                    <div class="profile-image">
-                        <img src="IMG_0061.jpeg" alt="Samip Upreti">
-                    </div>
-                    <div class="profile-info">
-                        <h2>Samip Upreti</h2>
-                        <p>Developer & Educator</p>
-                        <div class="contact-info">
-                            <div>
-                                <span>Email:</span>
-                                <span>upretsamip@gmail.com</span>
-                            </div>
-                            <div>
-                                <span>Location:</span>
-                                <span>Kathmandu, Nepal</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="main-content">
-                    <h1>About Me</h1>
-                    <p>I'm a developer and educator based in Nepal. With a BSc.CSIT degree and hands-on teaching experience, I bring technical depth and educational insight to the world of ICT and software development.</p>
-                    
-                    <p>My passion lies in bridging the gap between complex technology concepts and accessible learning experiences. Through my work in education, I've discovered the power of making technology approachable for learners of all ages.</p>
-
-                    <div class="skills-section">
-                        <h3>What I'm Doing</h3>
-                        <div class="skills-grid">
-                            <div class="skill-card">
-                                <h4>🌐 Web Development</h4>
-                                <p>Modern web applications with focus on user experience and performance optimization.</p>
-                            </div>
-                            <div class="skill-card">
-                                <h4>📱 Mobile Apps</h4>
-                                <p>Cross-platform mobile applications for iOS and Android using modern frameworks.</p>
-                            </div>
-                            <div class="skill-card">
-                                <h4>🎓 Education Technology</h4>
-                                <p>Creating engaging educational content and digital learning experiences.</p>
-                            </div>
-                            <div class="skill-card">
-                                <h4>🔧 Technical Training</h4>
-                                <p>Conducting workshops and training sessions on various technology topics.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+          <div class="info-label">LOCATION</div>
+          <div class="info-val">Lalitpur, Nepal</div>
         </div>
-    </section>
-
-    <!-- Experience Page -->
-    <section id="experience" class="page">
-        <div class="container">
-            <h1 style="font-size: 3rem; margin-bottom: 3rem; text-align: center; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Experience</h1>
-            
-            <div class="experience-timeline fade-in">
-                <div class="experience-item">
-                    <h3>ICT and Makerspace Educator</h3>
-                    <div class="company">Rato Bangala School</div>
-                    <div class="duration">Oct 2024 – Present</div>
-                    <div class="location">📍 Lalitpur, Nepal</div>
-                    <p>Teaching computer science and Makerspace activities to young learners. Developing innovative curricula that combine theoretical computer science concepts with hands-on maker activities, fostering creativity and technical skills in students.</p>
-                </div>
-
-                <div class="experience-item">
-                    <h3>ICT Educator</h3>
-                    <div class="company">Gems School</div>
-                    <div class="duration">Nov 2023 – Oct 2024</div>
-                    <div class="location">📍 Lalitpur, Nepal</div>
-                    <p>Delivered engaging digital literacy lessons and improved the ICT curriculum. Successfully integrated modern teaching methodologies with technology education, resulting in improved student engagement and learning outcomes.</p>
-                </div>
-
-                <div class="experience-item">
-                    <h3>Education</h3>
-                    <div class="company">BSc.CSIT Degree</div>
-                    <div class="duration">2018 – 2022</div>
-                    <div class="location">📍 Nepal</div>
-                    <p>Completed Bachelor of Science in Computer Science and Information Technology with focus on software development, database systems, and computer networks. Participated in various programming competitions and tech workshops.</p>
-                </div>
-            </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">💼</div>
+        <div>
+          <div class="info-label">LINKEDIN</div>
+          <div class="info-val"><a href="https://www.linkedin.com/in/samip-upreti/" target="_blank">linkedin.com/in/samip-upreti</a></div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Contact Page -->
-    <section id="contact" class="page">
-        <div class="container">
-            <h1 style="font-size: 3rem; margin-bottom: 3rem; text-align: center; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Contact</h1>
-            
-            <div class="contact-content fade-in">
-                <div class="contact-form">
-                    <h2>Get In Touch</h2>
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <input type="text" id="subject" name="subject" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Your Message</label>
-                            <textarea id="message" name="message" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="submit-btn">Send Message</button>
-                    </form>
-                </div>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">© 2025 SAMIP_UPRETI // ALL RIGHTS RESERVED</div>
+  <div class="footer-links">
+    <a href="/cdn-cgi/l/email-protection#eb9e9b998e9f988a86829bab8c868a8287c5888486">EMAIL</a>
+    <a href="https://www.linkedin.com/in/samip-upreti/" target="_blank">LINKEDIN</a>
+    <a href="#hero">↑ TOP</a>
+  </div>
+</footer>
 
-                <div class="contact-info-section">
-                    <h2>Contact Information</h2>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">📧</div>
-                        <div class="contact-item-content">
-                            <h4>Email</h4>
-                            <p>upretsamip@gmail.com</p>
-                        </div>
-                    </div>   
-                    <div class="contact-item">
-                        <div class="contact-icon">📍</div>
-                        <div class="contact-item-content">
-                            <h4>Location</h4>
-                            <p>Lalitpur, Nepal</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">💼</div>
-                        <div class="contact-item-content">
-                            <h4>LinkedIn</h4>
-                            <p>https://www.linkedin.com/in/samip-upreti/</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const el = document.getElementById('clock');
+    if (el) el.textContent = `${h}:${m}:${s}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
 
-    <script>
-        // Navigation functionality
-        const navLinks = document.querySelectorAll('.nav-link');
-        const pages = document.querySelectorAll('.page');
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Remove active class from all links and pages
-                navLinks.forEach(nl => nl.classList.remove('active'));
-                pages.forEach(page => page.classList.remove('active'));
-                
-                // Add active class to clicked link
-                link.classList.add('active');
-                
-                // Show corresponding page
-                const targetPage = document.querySelector(link.getAttribute('href'));
-                targetPage.classList.add('active');
-                
-                // Trigger animation
-                const fadeElements = targetPage.querySelectorAll('.fade-in');
-                fadeElements.forEach((el, index) => {
-                    el.style.animationDelay = `${index * 0.1}s`;
-                });
-            });
-        });
+  document.querySelectorAll('a, button, .service-card, .info-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+      cursor.style.borderColor = 'var(--amber)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+      cursor.style.borderColor = 'var(--green)';
+    });
+  });
 
-        // Contact form handling
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = new FormData(this);
-            const name = formData.get('name');
-            
-            // Simple form submission feedback
-            alert(`Thank you ${name}! Your message has been received. I'll get back to you soon.`);
-            
-            // Reset form
-            this.reset();
-        });
+  // Form submit — Formspree integration
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('sendBtn');
+    const fb = document.getElementById('formFeedback');
+    const form = e.target;
 
-        // Add smooth scrolling and animations
-        window.addEventListener('load', () => {
-            const activeElements = document.querySelectorAll('.page.active .fade-in');
-            activeElements.forEach((el, index) => {
-                el.style.animationDelay = `${index * 0.1}s`;
-            });
-        });
+    btn.textContent = 'TRANSMITTING...';
+    btn.style.opacity = '0.6';
+    fb.style.display = 'none';
 
-        // Add typing effect to the main title
-        function typeWriter(element, text, speed = 100) {
-            let i = 0;
-            element.innerHTML = '';
-            
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            
-            type();
-        }
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
 
-        // Initialize typing effect on load
-        window.addEventListener('load', () => {
-            const aboutTitle = document.querySelector('#about .main-content h1');
-            if (aboutTitle) {
-                typeWriter(aboutTitle, 'About Me', 150);
-            }
-        });
+      if (response.ok) {
+        btn.textContent = 'SENT ✓';
+        btn.style.borderColor = 'var(--amber)';
+        fb.style.display = 'block';
+        fb.style.color = 'var(--amber)';
+        fb.textContent = '> MESSAGE TRANSMITTED SUCCESSFULLY. WILL RESPOND SHORTLY.';
+        form.reset();
+      } else {
+        throw new Error('Server error');
+      }
+    } catch (err) {
+      btn.textContent = 'ERROR — RETRY';
+      fb.style.display = 'block';
+      fb.style.color = '#ff4444';
+      fb.textContent = '> TRANSMISSION FAILED. TRY EMAILING DIRECTLY.';
+    } finally {
+      btn.style.opacity = '1';
+      setTimeout(() => {
+        btn.textContent = 'SEND_MESSAGE';
+        btn.style.borderColor = 'var(--green)';
+        fb.style.display = 'none';
+      }, 5000);
+    }
+  }
 
-        // Add hover effects for skill cards
-        document.querySelectorAll('.skill-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-10px) scale(1.02)';
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) scale(1)';
-            });
-        });
+  // Intersection observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.style.opacity = '1';
+    });
+  }, { threshold: 0.1 });
 
-        // Add floating animation to profile image
-        const profileImage = document.querySelector('.profile-image');
-        if (profileImage) {
-            setInterval(() => {
-                profileImage.style.transform = 'translateY(-5px)';
-                setTimeout(() => {
-                    profileImage.style.transform = 'translateY(0px)';
-                }, 1000);
-            }, 3000);
-        }
-    </script>
-</body>
-</html>
+  document.querySelectorAll('.service-card, .timeline-item, .info-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.5s ease';
+    observer.observe(el);
+  });
+
+  // Typing effect on hero-pre
+  const heroPre = document.
